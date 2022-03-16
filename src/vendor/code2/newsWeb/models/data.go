@@ -2,6 +2,7 @@ package models
 
 //表的设计和创建
 import (
+	"github.com/astaxie/beego"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -36,9 +37,12 @@ type ArticleType struct {
 
 func init() {
 	//注册数据库
-	orm.RegisterDataBase("default", "mysql", "root:root@tcp(172.17.0.3:3306)/newsWeb")
+	beego.Info("注册数据库")
+	//  mysql -h radondb-smileai-radondb-m-leader -uroot -p
+	orm.RegisterDataBase("default", "mysql", "root:Qwer@333@tcp(radondb-smileai-radondb-m-leader)/newsWeb")
 	//注册表
 	orm.RegisterModel(new(User), new(Article), new(ArticleType))
 	//跑起来
 	orm.RunSyncdb("default", false, true)
 }
+
