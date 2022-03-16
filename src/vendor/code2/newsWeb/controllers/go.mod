@@ -3,7 +3,9 @@ module github.com/devuser/beego-microservices/controllers
 go 1.12
 
 require (
+	code2/newsWeb/models v0.0.0
 	github.com/astaxie/beego v1.11.1
+	google.golang.org/appengine v1.6.1 // indirect
 )
 
 replace golang.org/x/crypto v0.0.0-20181127143415-eb0de9b17e85 => github.com/golang/crypto v0.0.0-20190618222545-ea8f1a30c443

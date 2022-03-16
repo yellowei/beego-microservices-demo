@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/orm"
 	"code2/newsWeb/models"
 	"encoding/base64"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 )
 
 type UserController struct {

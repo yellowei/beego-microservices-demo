@@ -7,7 +7,6 @@ require (
 	code2/newsWeb/routers v0.0.0
 	github.com/astaxie/beego v1.11.1
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a
-	google.golang.org/appengine v1.6.1 // indirect
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
 
