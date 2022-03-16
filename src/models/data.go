@@ -39,7 +39,11 @@ func init() {
 	//注册数据库
 	beego.Info("注册数据库")
 	//  mysql -h radondb-smileai-radondb-m-leader -uroot -p
-	orm.RegisterDataBase("default", "mysql", "root:Qwer@333@tcp(radondb-smileai-radondb-m-leader)/newsWeb")
+	dbHost := beego.AppConfig.String("db_host")
+	dbName := beego.AppConfig.String("db_dbname")
+	dbPassword := beego.AppConfig.String("db_password")
+	dbUser := beego.AppConfig.String("db_user")
+	orm.RegisterDataBase("default", "mysql", dbUser + ":" + dbPassword + "@tcp(" + dbHost + ")/"+ dbName )
 	//注册表
 	orm.RegisterModel(new(User), new(Article), new(ArticleType))
 	//跑起来
