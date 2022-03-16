@@ -16,7 +16,7 @@ spec:
         app: test-beego
     spec:
       imagePullSecrets:
-        - name: registry-secret
+        - name: registry-secret-yellowei
       # 定义容器，可以多个
       volumes:
         - name: volume-go-demo
@@ -24,7 +24,7 @@ spec:
             name: go-demo-config
       containers:
         - name: go-demo # 容器名字
-          image: registry.cn-shenzhen.aliyuncs.com/smileai/go-demo:main # 镜像
+          image: registry.cn-shenzhen.aliyuncs.com/yellowei/beego-demo:main # 镜像
           imagePullPolicy: Always
           volumeMounts:
             - name: volume-go-demo
