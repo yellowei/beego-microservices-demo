@@ -1,32 +1,92 @@
+kind: StatefulSet
 apiVersion: apps/v1
-kind: Deployment
 metadata:
-  # 部署名字
-  name: test-beego
+  labels:
+    app: beego-server
+  name: beego-server
+  namespace: public
+  annotations:
+    kubesphere.io/creator: admin
 spec:
   replicas: 2
-  # 用来查找关联的 Pod，所有标签都匹配才行
   selector:
     matchLabels:
-      app: test-beego
-  # 定义 Pod 相关数据
+      app: beego-server
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        app: test-beego
+        app: beego-server
     spec:
-      imagePullSecrets:
-        - name: registry-secret-yellowei
-      # 定义容器，可以多个
       volumes:
-        - name: volume-go-demo
+        - name: volume-beego
           configMap:
             name: go-demo-config
-      containers:
-        - name: go-demo # 容器名字
-          image: registry.cn-shenzhen.aliyuncs.com/yellowei/beego-demo:main # 镜像
-          imagePullPolicy: Always
+            defaultMode: 420
+      initContainers:
+        - name: init-beego
+          image: 'registry.cn-shenzhen.aliyuncs.com/yellowei/beego-demo:main' #'busybox:1.32'
+          command:
+            - sh
+            - '-c'
+          args:
+            - >
+              # Copy appropriate conf files from config-map to config mount.
+
+              cp -rf /app/* /beego/
+
+              cp -f /config-map/app.conf /beego/conf/app.conf
+
+          resources: { }
           volumeMounts:
-            - name: volume-go-demo
+            - name: beego-data
+              mountPath: /beego
+              persistentVolumeClaim:
+                claimName: beego-data  #与PVC名称保持一致
+            - name: volume-beego
+              readOnly: true
+              mountPath: /config-map
+      containers:
+        - name: beego
+          image: 'registry.cn-shenzhen.aliyuncs.com/yellowei/beego-demo:main'
+          resources: {}
+          volumeMounts:
+            - name: beego-data
+              mountPath: /app
+              persistentVolumeClaim:
+                claimName: beego-data  #与PVC名称保持一致
+            - name: volume-beego
               readOnly: true
               mountPath: /app/conf
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      imagePullSecrets:
+        - name: registry-secret-yellowei
+      schedulerName: default-scheduler
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: beego-data
+        creationTimestamp: null
+      spec:
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 10Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  serviceName: 'beego-server'
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10
