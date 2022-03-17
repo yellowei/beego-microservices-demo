@@ -8,7 +8,7 @@ metadata:
   annotations:
     kubesphere.io/creator: admin
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: beego-server
